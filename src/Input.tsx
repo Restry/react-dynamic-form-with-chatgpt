@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
 
 // const Input = ({ type, name, label, options, value, onChange }: InputProps) => {
@@ -8,12 +8,20 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
   const { type, name, label, options } = field;
 
   const disabled = field.isDisabled ? field.isDisabled(values) : false;
-  console.log(`[Input]:${field.name}`);
+  !field.subFields && console.log(`[Input]:${name}`);
 
-  const renderSubFields = () => {
+  const onValueChange = useCallback(
+    (e: any, path = "", innerField = null) => {
+      onChange(e, path || name, innerField || field);
+    },
+    [onChange]
+  );
+
+  const renderSubFields = useMemo(() => {
     if (!field.subFields) {
       return null;
     }
+    console.log(`[subField]:${name}`);
 
     return (
       <div className="mt-4 ml-4">
@@ -22,13 +30,15 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
             key={subField.name}
             field={subField}
             value={value[subField.name]}
-            onChange={onChange}
+            onChange={(e) =>
+              onValueChange(e, `${name}.${subField.name}`, subField)
+            }
             values={value}
           />
         ))}
       </div>
     );
-  };
+  }, [field.subFields, name, value]);
 
   return (
     <div className="mb-4">
@@ -42,7 +52,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           id={name}
           value={value}
           disabled={disabled}
-          onChange={onChange}
+          onChange={onValueChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
@@ -52,7 +62,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           id={name}
           value={value}
           disabled={disabled}
-          onChange={onChange}
+          onChange={onValueChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
@@ -66,7 +76,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
               value={option.value}
               disabled={disabled}
               checked={value === option.value}
-              onChange={onChange}
+              onChange={onValueChange}
               className="form-radio h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
             />
             <label htmlFor={option.value} className="ml-3">
@@ -81,7 +91,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           name={name}
           checked={value}
           disabled={disabled}
-          onChange={onChange}
+          onChange={onValueChange}
           className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
         />
       )}
@@ -90,7 +100,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           name={name}
           id={name}
           value={value}
-          onChange={onChange}
+          onChange={onValueChange}
           disabled={disabled}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
@@ -101,8 +111,15 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           ))}
         </select>
       )}
-      {renderSubFields()}
+      {renderSubFields}
     </div>
   );
 };
-export default memo(Input, (prev, next) => prev.value === next.value);
+export default memo(Input, (prev, next) => {
+  console.log(
+    `[MEMO]:${next.field?.name} ${prev.value === next.value} ${
+      prev.field.key
+    } === ${next.field.key}`
+  );
+  return prev.value === next.value && prev.field.key === next.field.key;
+});

@@ -1,4 +1,6 @@
 export type Field = {
+  key?: any;
+  dependent?: string[];
   type: FieldType;
   name: string;
   label: string;
@@ -25,7 +27,9 @@ export type InputProps = {
   field: Field;
   value: any;
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>,
+    path?: string,
+    field?: Field
   ) => void;
   values: any;
 };
