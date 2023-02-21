@@ -49,12 +49,15 @@ const fields = [
   {
     type: "checkbox",
     name: "agreement",
+    dependent: ["select"],
     label: "Agree to terms and conditions",
   },
   {
+    key: -1,
     type: "select",
     name: "select",
     label: "Agree",
+    isDisabled: (values) => values.agreement,
     options: [
       { value: "male", label: "Male" },
       { value: "female", label: "Female" },

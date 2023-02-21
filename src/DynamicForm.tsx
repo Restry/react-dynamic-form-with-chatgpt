@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useImmer } from "use-immer";
 import Input from "./Input";
 import { FormComponentProps, Field } from "./Type";
+import { set } from "lodash";
 
 const FormComponent = ({
   fields,
@@ -24,17 +25,27 @@ const FormComponent = ({
   });
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
+    (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>,
+      path = "",
+      field
+    ) => {
       const { name, value, type, checked } = e.target;
+      let updateValuePath = path ? path : name;
+
+      if (field.dependent) {
+        field.dependent?.forEach((name: string) => {
+          const dependField = fields.find((b) => b.name === name);
+          console.log("dependField", dependField);
+          dependField && (dependField.key = Date.now());
+        });
+      }
+
       updateFormValue((draft) => {
-        if (type === "checkbox") {
-          draft[name] = checked;
-        } else {
-          draft[name] = value;
-        }
+        set(draft, updateValuePath, type === "checkbox" ? checked : value);
       });
     },
-    [updateFormValue]
+    [updateFormValue, fields, Date.now]
   );
 
   const handleSubmit = useCallback(
