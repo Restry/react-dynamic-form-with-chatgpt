@@ -10,11 +10,11 @@ const FormComponent = ({
   defaultValue,
 }: FormComponentProps) => {
   const preprocessFieldValue = useCallback((field: Field, value: any) => {
-    return field?.preprocess ? field.preprocess(value) : value;
+    return field?.preprocess ? field.preprocess(value) : (value || '');
   }, []);
 
   const [formValue, updateFormValue] = useImmer<any>(() => {
-    const initValues: any = {};
+    const initValues: any = { __tracker: [] };
     fields.forEach((field) => {
       initValues[field.name] = preprocessFieldValue(
         field,
@@ -32,16 +32,9 @@ const FormComponent = ({
     ) => {
       const { name, value, type, checked } = e.target;
       let updateValuePath = path ? path : name;
-
-      if (field.dependent) {
-        field.dependent?.forEach((name: string) => {
-          const dependField = fields.find((b) => b.name === name);
-          console.log("dependField", dependField);
-          dependField && (dependField.key = Date.now());
-        });
-      }
-
+ 
       updateFormValue((draft) => {
+        draft.__tracker = field.dependent || []
         set(draft, updateValuePath, type === "checkbox" ? checked : value);
       });
     },

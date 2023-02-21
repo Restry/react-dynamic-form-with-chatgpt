@@ -41,7 +41,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
   }, [field.subFields, name, value]);
 
   return (
-    <div className="mb-4">
+    <div className="mb-8">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -116,10 +116,8 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
   );
 };
 export default memo(Input, (prev, next) => {
-  console.log(
-    `[MEMO]:${next.field?.name} ${prev.value === next.value} ${
-      prev.field.key
-    } === ${next.field.key}`
-  );
-  return prev.value === next.value && prev.field.key === next.field.key;
+  // console.log(
+  //   `[MEMO]:${next.field?.name} ${prev.value === next.value && !next.values.__tracker.includes(next.field?.name)}`
+  // );
+  return prev.value === next.value && !next.values.__tracker.includes(next.field?.name);
 });

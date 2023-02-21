@@ -38,22 +38,22 @@ const fields = [
     label: "Description",
   },
   {
+    type: "checkbox",
+    name: "agreement",
+    dependent: ["select","gender"],
+    label: "Agree to terms and conditions",
+  },
+  {
     type: "radio",
     name: "gender",
     label: "Gender",
+    isDisabled: (values) => values.agreement,
     options: [
       { value: "male", label: "Male" },
       { value: "female", label: "Female" },
     ],
   },
-  {
-    type: "checkbox",
-    name: "agreement",
-    dependent: ["select"],
-    label: "Agree to terms and conditions",
-  },
-  {
-    key: -1,
+  { 
     type: "select",
     name: "select",
     label: "Agree",
@@ -68,8 +68,8 @@ const fields = [
 export default function App() {
   return (
     <div style={{ background: "#fff", margin: "1em" }}>
-      <div className="md:grid md:grid-cols-3 md:gap-6">
-        <div className="mt-5 md:col-span-2 md:mt-0">
+      <div className="md:grid md:grid-cols-1 md:gap-6">
+        <div className="mt-10 md:col-span-2 md:mt-0">
           <DynamicForm
             fields={fields}
             defaultValue={{ name: "ninc", workExperience: {} }}

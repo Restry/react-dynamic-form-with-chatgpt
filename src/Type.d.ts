@@ -1,5 +1,4 @@
-export type Field = {
-  key?: any;
+export type Field = { 
   dependent?: string[];
   type: FieldType;
   name: string;
