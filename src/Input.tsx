@@ -1,9 +1,6 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
 
-// const Input = ({ type, name, label, options, value, onChange }: InputProps) => {
-//   console.log(`[Input]:${name}`);
-
 const Input = ({ field, value, onChange, values }: InputProps) => {
   const { type, name, label, options } = field;
 
@@ -21,27 +18,58 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
     if (!field.subFields) {
       return null;
     }
-    console.log(`[subField]:${name}`);
+    const subFieldsValue = value || [];
+    const addSubField = () => {
+      const newSubField = Object.fromEntries(field.subFields.map(subField => [subField.name, '']));
+
+      const newSubFieldsValue = [...subFieldsValue, newSubField];
+      onValueChange({ target: { value: newSubFieldsValue } });
+    }
+
+    const removeSubField = (subfieldIndex) => {
+      const newSubfields = subFieldsValue.filter((_, index) => index !== subfieldIndex);
+      onValueChange({ target: { value: newSubfields } });
+    };
 
     return (
-      <div className="mt-4 ml-4">
-        {field.subFields.map((subField) => (
-          <Input
-            key={subField.name}
-            field={subField}
-            value={value[subField.name]}
-            onChange={(e) =>
-              onValueChange(e, `${name}.${subField.name}`, subField)
-            }
-            values={value}
-          />
+      <div>
+        {subFieldsValue.map((subFieldValue: any, i: number) => (
+          <div key={`${name}-subField-${i}`} className="mt-4 ml-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+
+            {field.subFields.map((subField) => (
+              <div className="bg-gray-100 p-2"> <Input
+                key={`${name}-${subField.name}-${i}`}
+                field={subField}
+                value={subFieldValue[subField.name]}
+                onChange={(e) =>
+                  onValueChange(e, `${name}[${i}]${subField.name}`, subField)
+                }
+                values={subFieldValue}
+              />
+
+              </div>
+            ))}
+                <button onClick={() => removeSubField(i)} type="button" className="px-2 py-1 rounded-lg flex items-center">
+                  Remove
+                </button>
+          </div>
         ))}
+
+        <div className="border border-dashed border-gray-300 bg-gray-200 hover:bg-gray-300 py-1 mt-2 flex items-center justify-center">
+          <button onClick={addSubField} type="button" className=" px-2 py-1 rounded-lg flex items-center">
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Add
+          </button>
+        </div>
+
+
       </div>
     );
-  }, [field.subFields, name, value]);
+  }, [field.subFields, name, onValueChange, onChange, value]);
+
 
   return (
-    <div className="mb-8">
+    <div className="mb-2">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -71,7 +99,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           <div key={option.value} className="flex items-center">
             <input
               type="radio"
-              id={option.value}
+              id={name}
               name={name}
               value={option.value}
               disabled={disabled}
@@ -79,7 +107,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
               onChange={onValueChange}
               className="form-radio h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
             />
-            <label htmlFor={option.value} className="ml-3">
+            <label htmlFor={option.value} id={option.value} className="ml-3">
               {option.label}
             </label>
           </div>
@@ -116,8 +144,5 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
   );
 };
 export default memo(Input, (prev, next) => {
-  // console.log(
-  //   `[MEMO]:${next.field?.name} ${prev.value === next.value && !next.values.__tracker.includes(next.field?.name)}`
-  // );
   return prev.value === next.value && !next.values.__tracker.includes(next.field?.name);
 });

@@ -21,14 +21,14 @@ const fields = [
         type: FieldType.Text,
       },
       {
-        name: "address",
-        label: "Address",
-        type: FieldType.TextArea,
-      },
-      {
         name: "phoneNumber",
         label: "Phone Number",
         type: FieldType.Text,
+      },
+      {
+        name: "address",
+        label: "Address",
+        type: FieldType.TextArea,
       },
     ],
   },
@@ -72,7 +72,7 @@ export default function App() {
         <div className="mt-10 md:col-span-2 md:mt-0">
           <DynamicForm
             fields={fields}
-            defaultValue={{ name: "ninc", workExperience: {} }}
+            defaultValue={{ name: "ninc", workExperience: [{"companyName":"4213","phoneNumber":"423","address":"4532"},{"companyName":"234323","phoneNumber":"12345643211","address":""}] }}
           />
         </div>
       </div>
