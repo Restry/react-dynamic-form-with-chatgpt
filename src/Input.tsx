@@ -49,9 +49,9 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
 
               </div>
             ))}
-                <button onClick={() => removeSubField(i)} type="button" className="px-2 py-1 rounded-lg flex items-center">
-                  Remove
-                </button>
+            <button onClick={() => removeSubField(i)} type="button" className="px-2 py-1 rounded-lg flex items-center">
+              Remove
+            </button>
           </div>
         ))}
 
@@ -94,12 +94,12 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
-      {type === FieldType.Radio &&
-        options?.map((option) => (
+      {type === FieldType.Radio && <div id={name}>
+        {options?.map((option) => (
           <div key={option.value} className="flex items-center">
             <input
               type="radio"
-              id={name}
+              id={option.value}
               name={name}
               value={option.value}
               disabled={disabled}
@@ -107,11 +107,11 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
               onChange={onValueChange}
               className="form-radio h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
             />
-            <label htmlFor={option.value} id={option.value} className="ml-3">
+            <label htmlFor={option.value} id={option.label} className="ml-3">
               {option.label}
             </label>
           </div>
-        ))}
+        ))}</div>}
       {type === FieldType.Checkbox && (
         <input
           type="checkbox"
