@@ -50,6 +50,7 @@ const FormComponent = ({
         const value = formValue[name];
         processedFormValue[name] = preprocessFieldValue(field, value);
       });
+      console.log(JSON.stringify(processedFormValue));
       onSubmit && onSubmit(processedFormValue);
       return processedFormValue;
     },
@@ -70,7 +71,7 @@ const FormComponent = ({
 
   return (
     <div style={{ margin: "2em" }}>
-      <form>{formItems}</form>
+      <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">{formItems}</div>
       <div style={{ width: "100%", wordBreak: "break-all" }}>
         {JSON.stringify(formValue)}
       </div>

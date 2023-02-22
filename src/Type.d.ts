@@ -23,6 +23,7 @@ export enum FieldType {
 }
 
 export type InputProps = {
+  keyPath?: string;
   field: Field;
   value: any;
   onChange: (

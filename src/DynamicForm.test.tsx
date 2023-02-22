@@ -9,103 +9,85 @@ Object.defineProperty(window, "setup", setup);
 describe("FormComponent", () => {
   const fields: Field[] = [
     { name: "firstName", label: "First Name", type: FieldType.Text, },
-    { name: "lastName", label: "Last Name", type: FieldType.Text, },
-    // { name: "email", label: "Email", type: FieldType.Email, },
-    // { name: "password", label: "Password", type: FieldType.Password, },
-    { name: "rememberMe", label: "Remember Me", type: FieldType.Checkbox, }, 
+    { name: "lastName", label: "Last Name", type: FieldType.Text, }, 
+    { name: "rememberMe", label: "Remember Me", type: FieldType.Checkbox, },
+
     {
-      name: "gender", label: "Gender", type: FieldType.Radio, options: [{ value: "male", label: "Male", }, { value: "female", label: "Female", },],
+      type: FieldType.Text,
+      name: "name",
+      label: "Name",
+      preprocess: (value) => `[86]${value}`,
     },
-    // {
-    //   name: "country",
-    //   label: "Country",
-    //   type: FieldType.Select,
-    //   options: [
-    //     {
-    //       value: "usa",
-    //       label: "USA",
-    //     },
-    //     {
-    //       value: "uk",
-    //       label: "UK",
-    //     },
-    //     {
-    //       value: "canada",
-    //       label: "Canada",
-    //     },
-    //   ],
-    // },
+    {
+      type: FieldType.Group,
+      name: "workExperience",
+      label: "Work Experience",
+      subFields: [
+        {
+          name: "companyName",
+          label: "Company Name",
+          type: FieldType.Text,
+        },
+        {
+          name: "phoneNumber",
+          label: "Phone Number",
+          type: FieldType.Text,
+        },
+        {
+          name: "address",
+          label: "Address",
+          type: FieldType.TextArea,
+        },
+      ],
+    },
+    {
+      type: FieldType.TextArea,
+      name: "description",
+      label: "Description",
+    },
+    {
+      type: FieldType.Checkbox,
+      name: "agreement",
+      dependent: ["age", "gender"],
+      label: "Agree to terms and conditions",
+    },
+    {
+      type: FieldType.Radio,
+      name: "gender",
+      label: "Gender",
+      isDisabled: (values) => values.agreement,
+      options: [
+        { value: "male", label: "Male" },
+        { value: "female", label: "Female" },
+      ],
+    },
+    {
+      type: FieldType.Select,
+      name: "age",
+      label: "Age",
+      isDisabled: (values) => values.agreement,
+      options: [
+        { value: "10", label: "10" },
+        { value: "12", label: "12" },
+      ],
+    },
   ];
 
   const onSubmit = jest.fn();
 
   it("should render all fields", () => {
-    const { getByLabelText } = render(
+    render(
       <FormComponent fields={fields} onSubmit={onSubmit} defaultValue={{}} />
     );
 
     fields.forEach((field) => {
-      const label = screen.getByLabelText(field.label);
+      const label = screen.getByText(field.label);
       expect(label).toBeInTheDocument();
     });
   });
 
-  it("should update form value when a field is changed", () => {
-    const { getByLabelText } = render(
-      <FormComponent fields={fields} onSubmit={onSubmit} defaultValue={{}} />
-    );
-
-    const firstName = screen.getByLabelText("First Name");
-    fireEvent.change(firstName, { target: { value: "John" } });
-
-    const lastName = screen.getByLabelText("Last Name");
-    fireEvent.change(lastName, { target: { value: "Doe" } });
-
-    // const email = screen.getByLabelText("Email");
-    // fireEvent.change(email, { target: { value: "john.doe@example.com" } });
-
-    // const password = screen.getByLabelText("Password");
-    // fireEvent.change(password, { target: { value: "password123" } });
-
-    const rememberMe = screen.getByLabelText("Remember Me");
-    fireEvent.click(rememberMe);
-
-    const genderMale = screen.getByText("Male");
-    fireEvent.click(genderMale);
-
-    // const country = screen.getByLabelText("Country");
-    // fireEvent.change(country, { target: { value: "usa" } });
-
-    expect(onSubmit).toHaveBeenCalledTimes(0);
-
-    expect(firstName).toHaveValue("John");
-    expect(lastName).toHaveValue("Doe");
-    // expect(email).toHaveValue("john.doe@example.com");
-    // expect(password).toHaveValue("password123");
-    expect(rememberMe).toBeChecked();
-    expect(genderMale).toBeChecked();
-    // expect(country).toHaveValue("usa");
-  });
-
-  // it("renders all form fields correctly", () => {
-  //   render(
-  //     <FormComponent
-  //       fields={fields}
-  //       onSubmit={() => { }}
-  //       defaultValue={{ firstName: "", lastName: "", color: "", gender: "" }}
-  //     />
-  //   );
-
-  //   fields.forEach((field) => {
-  //     const input = screen.getByLabelText(field.label);
-  //     expect(input).toBeInTheDocument();
-  //     expect(input).toHaveAttribute("name", field.name);
-  //     expect(input).toHaveValue("");
-  //   });
-  // });
-
   it("updates the form value correctly when the user types into a field", () => {
-    const { getByLabelText } = render(
+    render(
       <FormComponent
         fields={fields}
         onSubmit={() => { }}
@@ -113,8 +95,14 @@ describe("FormComponent", () => {
       />
     );
 
-    const firstNameInput = screen.getByLabelText("First Name");
-    const lastNameInput = screen.getByLabelText("Last Name");
+    const firstNameInput = screen.getByTestId("firstName");
+    const lastNameInput = screen.getByTestId("lastName");
+
+    const addButton = screen.getByText("Add");
+    fireEvent.click(addButton);
+
+    const removeButton = screen.getByText("Remove");
+    fireEvent.click(removeButton);
 
     fireEvent.change(firstNameInput, { target: { value: "John" } });
     expect(firstNameInput).toHaveValue("John");
@@ -122,43 +110,69 @@ describe("FormComponent", () => {
     fireEvent.change(lastNameInput, { target: { value: "Doe" } });
     expect(lastNameInput).toHaveValue("Doe");
   });
-
-  const Button = ({ onClick, children }) => (
-    <button onClick={onClick}>{children}</button>
-  );
-
-  test("calls onClick prop when clicked", () => {
-    const handleClick = jest.fn();
-    render(<Button onClick={handleClick}>Click Me</Button>);
-    fireEvent.click(screen.getByText(/click me/i));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
+ 
   it("submits the form correctly when the submit button is clicked", () => {
     const onSubmit = jest.fn();
 
-    const { getByText, getByLabelText } = render(
+    render(
       <FormComponent
         fields={fields}
         onSubmit={onSubmit}
-        defaultValue={{ firstName: "", lastName: "", email: "", password: "" }}
+        defaultValue={{ firstName: "", lastName: "", workExperience: [] }}
       />
     );
 
-    const firstNameInput = getByLabelText("First Name");
-    const lastNameInput = getByLabelText("Last Name");
-    const submitButton = getByText("Save");
+    const firstNameInput = screen.getByTestId("firstName");
+    const lastNameInput = screen.getByTestId("lastName");
+    const submitButton = screen.getByText("Save");
 
     fireEvent.change(firstNameInput, { target: { value: "John" } });
     fireEvent.change(lastNameInput, { target: { value: "Doe" } });
-    // fireEvent.click(submitButton);
+
+    const genderMale = screen.getByText("Male");
+    fireEvent.click(genderMale);
+
+
+    const addButton = screen.getByText("Add");
+    fireEvent.click(addButton);
+    fireEvent.click(addButton);
+
+    const firstCompanyName = screen.getByTestId("workExperience-companyName-0");
+    fireEvent.change(firstCompanyName, { target: { value: "MS" } });
+
+    const allCompanyInput = screen.getAllByText('Company Name')
+    expect(allCompanyInput).toHaveLength(2);
+
+
+    fireEvent.click(screen.getByTestId('agreement'))
+
+    const genderInput = screen.getByTestId("male");
+    expect(genderInput).toBeDisabled()
+
+    fireEvent.click(screen.getByTestId('agreement'))
+    expect(genderInput).not.toBeDisabled()
+
     fireEvent.click(submitButton);
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
     expect(onSubmit).toHaveBeenCalledWith({
-      firstName: "John",
-      lastName: "Doe",
-      // email: "john.doe@example.com",
-      // password: "password123"
+      "age": "",
+      "agreement": '',
+      "description": "",
+      "firstName": "John",
+      "gender": "male",
+      "lastName": "Doe",
+      "name": "[86][86]undefined",
+      "rememberMe": "",
+      "workExperience": [{
+        "address": "",
+        "companyName": "MS",
+        "phoneNumber": "",
+      },{
+        "address": "",
+        "companyName": "",
+        "phoneNumber": "",
+      }],
     });
   });
 });

@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
 
-const Input = ({ field, value, onChange, values }: InputProps) => {
+const Input = ({ keyPath, field, value, onChange, values }: InputProps) => {
   const { type, name, label, options } = field;
 
   const disabled = field.isDisabled ? field.isDisabled(values) : false;
@@ -37,8 +37,8 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
           <div key={`${name}-subField-${i}`} className="mt-4 ml-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
 
             {field.subFields.map((subField) => (
-              <div className="bg-gray-100 p-2"> <Input
-                key={`${name}-${subField.name}-${i}`}
+              <div className="bg-gray-100 p-2" key={`${name}-${subField.name}-${i}`}> <Input
+                keyPath={`${name}-${subField.name}-${i}`}
                 field={subField}
                 value={subFieldValue[subField.name]}
                 onChange={(e) =>
@@ -77,7 +77,18 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
         <input
           type="text"
           name={name}
-          id={name}
+          data-testid={keyPath || name}
+          value={value}
+          disabled={disabled}
+          onChange={onValueChange}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      )}
+      {type === FieldType.Number && (
+        <input
+          type="number"
+          name={name}
+          data-testid={keyPath || name}
           value={value}
           disabled={disabled}
           onChange={onValueChange}
@@ -87,7 +98,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
       {type === FieldType.TextArea && (
         <textarea
           name={name}
-          id={name}
+          data-testid={keyPath || name}
           value={value}
           disabled={disabled}
           onChange={onValueChange}
@@ -100,6 +111,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
             <input
               type="radio"
               id={option.value}
+              data-testid={keyPath || option.value}
               name={name}
               value={option.value}
               disabled={disabled}
@@ -107,7 +119,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
               onChange={onValueChange}
               className="form-radio h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
             />
-            <label htmlFor={option.value} id={option.label} className="ml-3">
+            <label htmlFor={option.value} className="ml-3">
               {option.label}
             </label>
           </div>
@@ -115,7 +127,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
       {type === FieldType.Checkbox && (
         <input
           type="checkbox"
-          id={name}
+          data-testid={keyPath || name}
           name={name}
           checked={value}
           disabled={disabled}
@@ -126,7 +138,7 @@ const Input = ({ field, value, onChange, values }: InputProps) => {
       {type === FieldType.Select && (
         <select
           name={name}
-          id={name}
+          data-testid={keyPath || name}
           value={value}
           onChange={onValueChange}
           disabled={disabled}
