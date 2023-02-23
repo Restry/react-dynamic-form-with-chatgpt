@@ -70,24 +70,26 @@ const fields = [
   {
     name: 'company',
     label: '公司名称',
-    dependent: ['position', 'income'],
+    dependent: ['position'],
     type: FieldType.Text,
   },
   {
     name: 'position',
     label: '职位',
     type: FieldType.Text,
+    dependent: [ 'income'],
     isDisabled: (values) => !values.company,
   },
   {
     name: 'income',
     label: '年收入',
+    dependent: ['investment', 'creditScore'],
     type: FieldType.Number,
     isDisabled: (values) => !values.position,
   },
   {
     name: 'investment',
-    label: '投资金额',
+    label: '投资金额(income > 50000)',
     type: FieldType.Number,
     isDisabled: (values) => !values.position || values.income < 50000,
   },
@@ -146,6 +148,23 @@ const fields = [
       { value: 'married', label: '已婚' },
       { value: 'divorced', label: '离异' },
       { value: 'widowed', label: '丧偶' },
+    ],
+  },
+  {
+    type: FieldType.Group,
+    name: "workExperience",
+    label: "工作经历",
+    subFields: [
+      {
+        name: "companyName",
+        label: "公司",
+        type: FieldType.Text,
+      },
+      {
+        name: "phoneNumber",
+        label: "手机号",
+        type: FieldType.Text,
+      }, 
     ],
   },
 
@@ -208,15 +227,18 @@ const fields = [
 
 export default function App() {
   return (
-    <div style={{ background: "#fff", margin: "1em" }}>
-      <div className="md:grid md:grid-cols-1 md:gap-6">
-        <div className="mt-10 md:col-span-2 md:mt-0">
-          <DynamicForm
-            fields={fields}
-            defaultValue={{ name: "ninc", workExperience: [{ "companyName": "4213", "phoneNumber": "423", "address": "4532" }, { "companyName": "234323", "phoneNumber": "12345643211", "address": "" }] }}
-          />
+    <div style={{ background: "#fff" }}> 
+      <div className="bg-gray-800 py-6">
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl font-bold text-white">dynamic form generate by chatGPT</h1>
+          <p className="text-gray-400">80%主体业务逻辑，100%样式全由GPT生成。功能描述：根据JSON  Schema生成表单、嵌套表单、预处理数据、字段禁用逻辑</p>
         </div>
       </div>
-    </div>
+
+      <DynamicForm
+        fields={fields}
+        defaultValue={{ name: "ninc", workExperience: [{ "companyName": "4213", "phoneNumber": "423", "address": "4532" }, { "companyName": "234323", "phoneNumber": "12345643211", "address": "" }] }}
+      />
+    </div> 
   );
 }
