@@ -6,34 +6,39 @@ import { useImmer } from "use-immer";
 const StepForm = ({ steps, fields }) => {
   const [step, setStep] = useState(0);
 
-  const [formItems, updateFormItems] = useImmer<any>(() => fields.map(a => merge(a, {
+  // 初始化 formItems 状态为 fields 数组，并为每个元素添加一个名为 formItemProps 的属性对象，
+  // 其中 css 属性值根据元素的 step 属性和当前的 step 状态值来确定是否为 'block' 或 'hidden'
+  const [formItems, setFormItems] = useImmer<any>(() => fields.map(a => merge(a, {
     formItemProps: {
       css: a.step === step ? 'block' : 'hidden'
     }
   })));
 
-
-  const updateItems = useCallback((current) => {
-    updateFormItems((draft: any[]) => {
+  // 接收一个 current 参数，表示要更新为当前步骤的表单元素的 step 属性值
+  // 函数内部调用 useImmer 提供的 setFormItems 函数，更新每个元素的 formItemProps 对象的 css 属性值
+  const updateFieldsVisibility = useCallback((current) => {
+    setFormItems((draft: any[]) => {
       draft.forEach(a => {
         a.formItemProps.css = a.step === current ? 'block' : 'hidden'
       })
     })
-  }, [updateFormItems])
+  }, [setFormItems])
 
-  const handleNextStep = useCallback(() => {
+  // 如果当前步骤小于最后一步，更新状态为下一步并更新表单元素的显示状态
+  const nextStep = useCallback(() => {
     if (step < steps.length - 1) {
-      updateItems(step + 1);
+      updateFieldsVisibility(step + 1);
       setStep(step + 1);
     }
-  }, [step, steps.length, updateItems]);
+  }, [step, steps.length, updateFieldsVisibility]);
 
-  const handlePrevStep = useCallback(() => {
+  // 如果当前步骤大于第一步，更新状态为上一步并更新表单元素的显示状态
+  const prevStep = useCallback(() => {
     if (step > 0) {
-      updateItems(step - 1);
+      updateFieldsVisibility(step - 1);
       setStep(step - 1);
     }
-  }, [step, updateItems]);
+  }, [step, updateFieldsVisibility]);
 
   return (
     <div>
@@ -43,7 +48,7 @@ const StepForm = ({ steps, fields }) => {
         {step > 0 && (
           <button
             className="bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-l-md"
-            onClick={handlePrevStep}
+            onClick={prevStep}
           >
             Previous
           </button>
@@ -51,7 +56,7 @@ const StepForm = ({ steps, fields }) => {
         {step < steps.length - 1 ? (
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r-md"
-            onClick={handleNextStep}
+            onClick={nextStep}
           >
             Next
           </button>

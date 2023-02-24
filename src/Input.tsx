@@ -2,6 +2,13 @@ import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
 import { isEqual } from "lodash";
 
+/**
+ * 解包值的方法
+ * @param {any} show - 显示的方法
+ * @param {any} value - 显示的值
+ * @param {any} defaultValue - 默认值
+ * @returns 解包后的值
+ */
 const unWrapValue = (show, value, defaultValue) => {
   if (typeof show === "function") {
     return show(value);
@@ -9,12 +16,31 @@ const unWrapValue = (show, value, defaultValue) => {
   return defaultValue || value;
 };
 
+/**
+ * 输入框组件
+ * @component
+ * @param {object} props - 组件 props
+ * @param {string} props.keyPath - 键路径
+ * @param {object} props.field - 字段属性
+ * @param {any} props.value - 值
+ * @param {function} props.onChange - 值更改处理程序
+ * @param {object} props.values - 值列表
+ * @returns {JSX.Element} React 组件
+ */
 const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps) => {
   const { type, name, label, options } = field;
 
+  /**
+   * 字段是否禁用
+   * @type {boolean}
+   */
   const disabled = field?.disabled ? field?.disabled(values) : false;
   !field.subFields && console.log(`[Input]:${name}`);
 
+  /**
+   * 处理值更改的方法
+   * @type {Function}
+   */
   const onValueChange = useCallback(
     (e: any, path = "", innerField = null) => {
       onChange(e, path || name, innerField || field);
@@ -22,11 +48,19 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
     [field, name, onChange]
   );
 
+  /**
+   * 渲染子字段
+   * @type {JSX.Element|null}
+   */
   const renderSubFields = useMemo(() => {
     if (!field.subFields) {
       return null;
     }
     const subFieldsValue = value || [];
+    /**
+     * 添加子字段的方法
+     * @type {Function}
+     */
     const addSubField = () => {
       const newSubField = Object.fromEntries(field.subFields.map(subField => [subField.name, '']));
 
@@ -34,6 +68,10 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
       onValueChange({ target: { value: newSubFieldsValue } });
     }
 
+    /**
+     * 删除子字段的方法
+     * @param {number} subfieldIndex - 要删除的子字段索引
+     */
     const removeSubField = (subfieldIndex) => {
       const newSubfields = subFieldsValue.filter((_, index) => index !== subfieldIndex);
       onValueChange({ target: { value: newSubfields } });
@@ -177,12 +215,12 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
   );
 };
 export default memo(Input, (prev, next) => {
-  console.log(`isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css)`,
-  prev.field.step,
-  prev.field?.formItemProps,
-  next.field.step,
-  next.field?.formItemProps,
-  isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css))
+  // console.log(`isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css)`,
+  // prev.field.step,
+  // prev.field?.formItemProps,
+  // next.field.step,
+  // next.field?.formItemProps,
+  // isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css))
   return prev.value === next.value &&
     isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css) &&
     !next.values.__tracker.includes(next.field?.name);
