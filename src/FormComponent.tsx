@@ -96,11 +96,9 @@ const formItems = useMemo(() => {
 
 
   return (
-    <div style={{ margin: "2em" }}>
+    <div className="m-6">
       <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-${column} gap-8`}>{formItems}</div>
-      <div style={{ width: "100%", wordBreak: "break-all" }}>
-        {JSON.stringify(formValue)}
-      </div>
+    
       <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
         <button
           type="submit"
@@ -109,6 +107,12 @@ const formItems = useMemo(() => {
         >
           Save
         </button>
+      </div>
+
+
+      <div className="bg-slate-100 text-sm opacity-90 break-words p-4 mb-2 border border-dashed rounded-xl fixed top-2 right-2 w-2/4 h-8 overflow-hidden hover:h-auto">  
+      <div className="font-bold mb-2 border-dotted border-b-2">Output</div>
+        {JSON.stringify(formValue)}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import "./styles.css";
 
-import DynamicForm from "./FormComponent";
+import FormComponent from "./FormComponent";
 import { Field, FieldType } from "./Type.d";
 import StepForm from "StepForm";
 
@@ -241,7 +241,18 @@ export default function App() {
           <p className="text-gray-400">80%主体业务逻辑，100%样式全由GPT生成。功能描述：根据JSON  Schema生成表单、嵌套表单、预处理数据、字段禁用逻辑</p>
         </div>
       </div>
-
+      {/* <div className="grid grid-cols-3 gap-4">
+  <div className="col-span-1 bg-red-200">1</div>
+  <div className="col-span-1 bg-red-200">2</div>
+  <div className="col-span-1 bg-red-200">3</div>
+  <div className="col-span-1 bg-blue-200">4</div>
+  <div className="col-span-3 bg-blue-200">5</div>
+  <div className="col-span-1 bg-red-200">6</div>
+  <div className="col-span-1 bg-red-200">7</div>
+  <div className="col-span-1 bg-red-200">8</div>
+  <div className="col-span-1 bg-green-200">9</div>
+  <div className="col-span-1 bg-green-200">10</div>
+</div> */}
       <StepForm steps={steps} fields={fields} />
 
       {/* <DynamicForm

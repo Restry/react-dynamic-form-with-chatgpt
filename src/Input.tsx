@@ -118,7 +118,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
     <div className={`mb-2 col-span-${field.formItemProps?.span || 1} 
     ${unWrapValue(field.formItemProps?.show, field, true) ? "block" : "hidden"} 
     ${field.formItemProps?.css}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-gray-700">
         {label}
       </label>
       {type === FieldType.Text && (
@@ -129,7 +129,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
           value={value}
           disabled={disabled}
           onChange={onValueChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
       {type === FieldType.Number && (
@@ -140,7 +140,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
           value={value}
           disabled={disabled}
           onChange={onValueChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
       {type === FieldType.Email && (
@@ -151,7 +151,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
           value={value}
           disabled={disabled}
           onChange={onValueChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
       {type === FieldType.TextArea && (
@@ -161,12 +161,12 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
           value={value}
           disabled={disabled}
           onChange={onValueChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       )}
-      {type === FieldType.Radio && <div id={name}>
+      {type === FieldType.Radio && <div className="flex mt-2" id={name}>
         {options?.map((option) => (
-          <div key={option.value} className="flex items-center">
+          <div key={option.value} className="flex items-center mr-2">
             <input
               type="radio"
               id={option.value}
@@ -178,7 +178,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
               onChange={onValueChange}
               className="form-radio h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
             />
-            <label htmlFor={option.value} className="ml-3">
+            <label htmlFor={option.value} className="ml-1">
               {option.label}
             </label>
           </div>
@@ -201,7 +201,7 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
           value={value}
           onChange={onValueChange}
           disabled={disabled}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
           {options?.map((option) => (
             <option key={option.value} value={option.value}>

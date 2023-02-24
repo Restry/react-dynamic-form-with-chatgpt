@@ -41,13 +41,14 @@ const StepForm = ({ steps, fields }) => {
   }, [step, updateFieldsVisibility]);
 
   return (
-    <div>
-      <div className="text-xl font-bold mb-4">{`Step ${step + 1}`}</div>
+    <div className="">
+      <div className="text-xl font-bold mb-4 bg-slate-400 p-2">{`Step ${step + 1}`}</div>
       <FormComponent fields={formItems} onValueUpdate={(value) => { console.log(value) }} defaultValue={{}} />
-      <div className="mt-4">
+
+      <div className="m-2 bg-gray-50 px-4 py-3 text-center sm:px-6">
         {step > 0 && (
           <button
-            className="bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-l-md"
+            className="bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-l-sm"
             onClick={prevStep}
           >
             Previous
@@ -55,14 +56,14 @@ const StepForm = ({ steps, fields }) => {
         )}
         {step < steps.length - 1 ? (
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r-md"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-sm"
             onClick={nextStep}
           >
             Next
           </button>
         ) : (
           <button
-            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-r-md"
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-r-sm"
             onClick={() => alert("Form submitted!")}
           >
             Submit
