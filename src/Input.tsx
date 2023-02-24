@@ -1,17 +1,25 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
+import { isEqual } from "lodash";
 
-const Input = ({ keyPath, field, value, onChange, values }: InputProps) => {
+const unWrapValue = (show, value, defaultValue) => {
+  if (typeof show === "function") {
+    return show(value);
+  }
+  return defaultValue || value;
+};
+
+const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps) => {
   const { type, name, label, options } = field;
 
-  const disabled = field.isDisabled ? field.isDisabled(values) : false;
+  const disabled = field?.disabled ? field?.disabled(values) : false;
   !field.subFields && console.log(`[Input]:${name}`);
 
   const onValueChange = useCallback(
     (e: any, path = "", innerField = null) => {
       onChange(e, path || name, innerField || field);
     },
-    [onChange]
+    [field, name, onChange]
   );
 
   const renderSubFields = useMemo(() => {
@@ -65,11 +73,13 @@ const Input = ({ keyPath, field, value, onChange, values }: InputProps) => {
 
       </div>
     );
-  }, [field.subFields, name, onValueChange, onChange, value]);
+  }, [field.subFields, name, onValueChange, value]);
 
 
   return (
-    <div className="mb-2">
+    <div className={`mb-2 col-span-${field.formItemProps?.span || 1} 
+    ${unWrapValue(field.formItemProps?.show, field, true) ? "block" : "hidden"} 
+    ${field.formItemProps?.css}`}>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -167,5 +177,13 @@ const Input = ({ keyPath, field, value, onChange, values }: InputProps) => {
   );
 };
 export default memo(Input, (prev, next) => {
-  return prev.value === next.value && !next.values.__tracker.includes(next.field?.name);
+  console.log(`isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css)`,
+  prev.field.step,
+  prev.field?.formItemProps,
+  next.field.step,
+  next.field?.formItemProps,
+  isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css))
+  return prev.value === next.value &&
+    isEqual(prev.field?.formItemProps?.css, next.field?.formItemProps?.css) &&
+    !next.values.__tracker.includes(next.field?.name);
 });

@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
-import FormComponent from "./DynamicForm";
-import { Field, FieldType } from "./Type.d";
+import FormComponent from "./FormComponent";
+import { Field, FieldType } from "./Type";
 const setup = { appConfig: jest.fn() };
 Object.defineProperty(window, "setup", setup);
 
@@ -55,7 +55,7 @@ describe("FormComponent", () => {
       type: FieldType.Radio,
       name: "gender",
       label: "Gender",
-      isDisabled: (values) => values.agreement,
+      disabled: (values) => values.agreement,
       options: [
         { value: "male", label: "Male" },
         { value: "female", label: "Female" },
@@ -65,7 +65,7 @@ describe("FormComponent", () => {
       type: FieldType.Select,
       name: "age",
       label: "Age",
-      isDisabled: (values) => values.agreement,
+      disabled: (values) => values.agreement,
       options: [
         { value: "10", label: "10" },
         { value: "12", label: "12" },

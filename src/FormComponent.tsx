@@ -8,6 +8,7 @@ const FormComponent = ({
   fields,
   onSubmit,
   defaultValue,
+  column = 3
 }: FormComponentProps) => {
   const preprocessFieldValue = useCallback((field: Field, value: any) => {
     return field?.preprocess ? field.preprocess(value) : (value || '');
@@ -32,13 +33,13 @@ const FormComponent = ({
     ) => {
       const { name, value, type, checked } = e.target;
       let updateValuePath = path ? path : name;
- 
+
       updateFormValue((draft) => {
         draft.__tracker = field.dependent || []
         set(draft, updateValuePath, type === "checkbox" ? checked : value);
       });
     },
-    [updateFormValue, fields, Date.now]
+    [updateFormValue]
   );
 
   const handleSubmit = useCallback(
@@ -71,7 +72,7 @@ const FormComponent = ({
 
   return (
     <div style={{ margin: "2em" }}>
-      <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">{formItems}</div>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-${column} gap-8`}>{formItems}</div>
       <div style={{ width: "100%", wordBreak: "break-all" }}>
         {JSON.stringify(formValue)}
       </div>
