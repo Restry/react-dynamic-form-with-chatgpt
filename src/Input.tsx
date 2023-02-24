@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { InputProps, FieldType } from "./Type.d";
 import { isEqual } from "lodash";
+import Select from './fields/Select'
 
 /**
  * 解包值的方法
@@ -195,20 +196,14 @@ const Input = ({ keyPath, field, value, onChange, values, ...rest }: InputProps)
         />
       )}
       {type === FieldType.Select && (
-        <select
-          name={name}
+        <Select 
           data-testid={keyPath || name}
           value={value}
           onChange={onValueChange}
           disabled={disabled}
-          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          {...field}
         >
-          {options?.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        </Select>
       )}
       {renderSubFields}
     </div>
