@@ -19,7 +19,7 @@ const Select = ({ options, url, mapper, value, onChange, disabled }) => {
   }, [options, url, mapper]);
 
   const handleChange = (event) => {
-    onChange(event.target.value);
+    onChange(event);
   };
 
   return (

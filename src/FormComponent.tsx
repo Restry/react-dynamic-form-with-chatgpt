@@ -4,6 +4,7 @@ import Input from "./Input";
 import { FormComponentProps, Field } from "./Type";
 import { set } from "lodash";
 
+let renderCount = 0;
 // 表单组件
 const FormComponent = ({
   // 表单字段的数组，每个字段都是Field类型的对象
@@ -81,25 +82,28 @@ const FormComponent = ({
     [fields, formValue, onSubmit, preprocessFieldValue]
   );
 
-const formItems = useMemo(() => {
-  return fields.map((field) => (
-    // 对于每个 field 生成一个 Input 组件
-    <Input
-      key={field.name} // React 需要一个 key 来标识数组中的每个元素，这里使用 field.name 作为 key
-      field={field} // 传递当前的 field 对象
-      values={formValue} // 传递整个表单的值
-      value={formValue[field.name]} // 传递当前 field 的值
-      onChange={handleChange} // 传递一个回调函数，当 Input 的值发生变化时会被调用
-    />
-  ));
-}, [fields, formValue, handleChange]);
+  const formItems = useMemo(() => {
+    return fields.map((field) => (
+      // 对于每个 field 生成一个 Input 组件
+      <Input
+        key={field.name} // React 需要一个 key 来标识数组中的每个元素，这里使用 field.name 作为 key
+        field={field} // 传递当前的 field 对象
+        values={formValue} // 传递整个表单的值
+        value={formValue[field.name]} // 传递当前 field 的值
+        onChange={handleChange} // 传递一个回调函数，当 Input 的值发生变化时会被调用
+      />
+    ));
+  }, [fields, formValue, handleChange]);
 
+  renderCount++
 
   return (
     <div className="m-6">
       <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-${column} gap-8`}>{formItems}</div>
-    
+
       <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+
+        {renderCount}
         <button
           type="submit"
           onClick={handleSubmit}
@@ -110,8 +114,8 @@ const formItems = useMemo(() => {
       </div>
 
 
-      <div className="bg-slate-100 text-sm opacity-90 break-words p-4 mb-2 border border-dashed rounded-xl fixed top-2 right-2 w-2/4 h-8 overflow-hidden hover:h-auto">  
-      <div className="font-bold mb-2 border-dotted border-b-2">Output</div>
+      <div className="bg-slate-100 text-sm opacity-90 break-words p-4 mb-2 border border-dashed rounded-xl fixed top-2 right-2 w-2/4 h-8 overflow-hidden hover:h-auto">
+        <div className="font-bold mb-2 border-dotted border-b-2">Output</div>
         {JSON.stringify(formValue)}
       </div>
     </div>

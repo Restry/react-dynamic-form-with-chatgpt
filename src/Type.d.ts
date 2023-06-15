@@ -2,10 +2,19 @@ export type Field = {
   dependent?: string[];
   type: FieldType;
   name: string;
-  label: string;
-  options?: { value: string; label: string }[];
+  label: string; 
+  options?: { value: string | number; label: string }[];
   step?:number;
   subFields?: Field[];
+
+  disabled?: boolean;
+  placeholder?: string;
+  rules?: {
+    required?: boolean;
+    pattern?: RegExp;
+    validator?: (value: string | number) => boolean;
+    message?: string;
+  }[];
 
   preprocess?: (value: any) => any;
   disabled?: (values: Record<string, any>) => boolean | boolean;
